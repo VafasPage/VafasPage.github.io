@@ -1,0 +1,174 @@
+<!-- This is based on DillingerLee's great template here:
+https://github.com/Team-Code/KA_Offline -->
+<html> 
+ <head>
+    <title>Processing.JS inside Webpages: Template</title> 
+</head>
+ <body>
+    <p align="center"> 
+	<!--This draws the Canvas on the webpage -->
+      <canvas id="mycanvas"></canvas> 
+    </p>
+ </body>
+ 
+ <!-- Run all the JavaScript stuff -->
+ <!-- Include the processing.js library -->
+ <!-- See https://khanacademy.zendesk.com/hc/en-us/articles/202260404-What-parts-of-ProcessingJS-does-Khan-Academy-support- for differences -->
+ <script src="C:\Users\Bijan\Documents\Vafa\Code\processing.js"></script> 
+ 
+ <script>
+    var sketchProc = function(processingInstance) {
+     with (processingInstance) {
+        size(400, 400); 
+        frameRate(30);
+        
+        // ProgramCodeGoesHere
+        //Star is an object which stores the star parameters and has meathods to draw them
+        angleMode = "degrees";
+         var Star = function(starSize, noPoints, colour){
+            this.starSize = starSize;
+            this.noPoints = noPoints;
+            this.colr = colour;
+         };
+
+         // this meathod of the Star object type draws the star
+         Star.prototype.drawIt = function(){
+            var outerVertexX;
+            var outerVertexY;
+            var innerVertexX;
+            var innerVertexY;
+            var rotateAngle = 2*Math.PI/this.noPoints;
+            fill(this.colr);
+            
+
+            //calculates and draws the vertexs of the star
+            beginShape();
+            for(var i=0; i<=this.noPoints;i++){
+               outerVertexX = 200+this.starSize * cos(i*rotateAngle); 
+               outerVertexY = 200+this.starSize * sin(i*rotateAngle); 
+               innerVertexX = 200+this.starSize/2 * cos(i*rotateAngle + rotateAngle/2); 
+               innerVertexY = 200+this.starSize/2 * sin(i*rotateAngle + rotateAngle/2); 
+               vertex(outerVertexX,outerVertexY);
+               vertex(innerVertexX,innerVertexY);
+            }
+            endShape(CLOSE); 
+         };
+
+         // StarSystem is an object type which holds a group of Star objects. It also allows for 
+         // drawing of the full star system aswell as incrementing the star system size.
+         var StarSystem =function(maxSize,minSize, noStars, noStarPoints){
+            this.noStars = noStars;
+            this.maxSize = maxSize;
+            this.minSize = minSize;
+            this.noStarPoints = noStarPoints;
+            this.starArray = new Array(noStars);
+            var sizeIncrement = (maxSize-minSize)/noStars;
+
+            for(var i=0;i<this.starArray.length;i++){
+               if(i%2===0){
+                     this.starArray[i] = new Star(maxSize-i*sizeIncrement,noStarPoints,color(255, 0, 0));
+               } else {
+                     this.starArray[i] = new Star(maxSize-i*sizeIncrement,noStarPoints,color(255, 255, 0));
+               }
+            }
+         };
+
+StarSystem.prototype.drawIt = function(){
+    for(var i=0;i<this.noStars;i++){
+        this.starArray[i].drawIt();
+    }
+};
+
+// this meathod increases the star system size
+StarSystem.prototype.increase = function(){
+    var firstColor;
+    if (this.starArray[0].starSize > this.maxSize)
+    {
+        firstColor = this.starArray[0].colr;
+        for(var i=0; i<this.noStars-1; i++){    
+            this.starArray[i].starSize = this.starArray[i+1].starSize;
+            this.starArray[i].colr = this.starArray[i+1].colr;
+        }
+        this.starArray[this.noStars-1].starSize = this.minSize;
+        this.starArray[this.noStars-1].colr=firstColor;
+        
+    }else{
+        for(var i=0;i<this.noStars;i++){
+        this.starArray[i].starSize+=2;
+        }
+    }
+};
+
+var watchY = 200;
+var time = 0;
+var stararray=[400,300,200,100];
+var stararray = new Array(4);
+
+// creates the star system object.
+// make sure an even number of stars is chosen for the star system.
+var starSystem = new StarSystem(600,50,4,9);
+var firstColor;
+    
+draw = function() {
+    background(255, 255, 255);
+    
+    // draws expanding star system
+    strokeWeight(2);
+    starSystem.drawIt();
+    starSystem.increase();
+    
+    // this section of code does the heading
+    stroke(0, 0, 255);
+    strokeWeight(10);
+    fill(255, 255, 0);
+    rect(58,50,300,50);
+    strokeWeight(2);
+    fill(0, 0, 255);
+    textSize(30);
+    text("Journey Watches", 200, 74);
+    
+    // This section of the code does the text at the bottom
+    strokeWeight(5);
+    fill(255, 255, 0);
+    rect(58,300,300,62);
+    textSize(25);
+    fill(0, 0, 0);
+    textAlign(CENTER, CENTER);
+    text("Isn't it time for you\nto have a journey?", 193, 330);
+    
+    // the next sement of code draws the watch
+    strokeWeight(3);
+    stroke(0, 0, 0);
+    fill(140, 0, 0);
+    rect(265,watchY-45,94,90);
+    rect(40,watchY-45,94,90);
+    fill(255, 255, 255);
+    ellipse(200,watchY,160,160);
+    ellipse(200,watchY,150,150);
+    fill(0, 0, 0);
+    text("12",200,watchY-60);
+    text("3",200+60,watchY);
+    text("6",200,watchY+62);
+    text("9",200-60,watchY);
+    
+    // Spinning minute hand
+    strokeWeight(5);
+    line(200,200,200+50*sin(time*2/45),200-50*cos(time*2/45));
+    
+    // Spiining hour hand
+    strokeWeight(8);
+    line(200,200,200+25*sin(time/6/45),200-25*cos(time/6/45));
+
+    // increments time on watch
+    time++;
+
+};
+    }};
+
+    // Get the canvas that Processing-js will use
+    var canvas = document.getElementById("mycanvas"); 
+    // Pass the function sketchProc (defined in myCode.js) to Processing's constructor.
+    var processingInstance = new Processing(canvas, sketchProc); 
+ </script>
+
+</html>
