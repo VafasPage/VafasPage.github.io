@@ -29,7 +29,7 @@
  
  
  <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script> 
- 
+
  <script>
     var sketchProc = function(processingInstance) {
      with (processingInstance) {
@@ -188,8 +188,6 @@ draw = function() {
 <script>
     var sketchProc = function(processingInstance) {
         with (processingInstance) {
-            size(400, 400); 
-            frameRate(30);
             var leviRand = function(max, min){
                 var value;
                 while(true){
@@ -200,21 +198,21 @@ draw = function() {
                 }
             };
 
-            var drawClouds = function(rand){    
-                var maxY = 169;
-                var xOff = rand;
-                var yOff;
+            var drawClouds = function(yOffInit, zOff){    
+                var maxY = 75;
+                var xOff = 0;
+                var yOff = yOffInit;
                 var val;
                 var x;
                 var y;
                 fill(250, 250, 250);
                 stroke(255, 255, 255,40);
-                strokeWeight(1);
+                strokeWeight(2);
                 
-                for(x=1; x<width; x++){
-                    yOff = rand;
-                    for(y=1; y<maxY;y++){
-                    val = map(noise(xOff,yOff),0,1,0,255);
+                for(x=1; x<width; x+=2){
+                    yOff = yOffInit;
+                    for(y=1; y<maxY;y+=2){
+                    val = map(noise(xOff,yOff, zOff),0,1,0,255);
                     stroke(255, 255, 255,val);
                     point(x,y);
                     yOff +=0.1;
@@ -224,17 +222,20 @@ draw = function() {
             };
 
             var drawTree = function(x, y, size){
-                noStroke();
                 pushMatrix();
                 translate(x,y);
                 scale(size);
-                beginShape();
-                fill(45, 161, 49);
-                vertex(0,16);
-                vertex(6, 0);
-                vertex(12, 16);
                 
+                // draws green part of tree
+                noStroke();
+                fill(45, 161, 49);
+                beginShape();
+                    vertex(0,16);
+                    vertex(6, 0);
+                    vertex(12, 16);
                 endShape(CLOSE);
+                
+                // draws trunk
                 fill(166, 124, 61);
                 rect(5,16,2,4);
                 popMatrix();
@@ -269,14 +270,10 @@ draw = function() {
                     rect(x, height-y, 1, y);
                 }
             };
-
+            size(400, 400); 
+            frameRate(10);
             //Draw Sky
-            fill(80, 131, 199);
-            rect(0,0,width,height);
-            noFill();
-                
-            //Draw clouds
-            drawClouds(random(0,100));
+            background(80, 131, 199);
 
             // furthest moutain
             drawMountainRange(color(55, 115, 93), random(0,10), 0.03, 0.5*height, 0.75*height);
@@ -288,14 +285,29 @@ draw = function() {
             drawMountainRange(color(45, 84, 37), random(0,10), 0.01, 0, 0.5*height);
 
             drawForrest(350);
+
+            var zOff = 0;
+            var yOffInit = 0;
+
+            draw = function() {
+                //Draw Sky
+                noStroke();
+                fill(80, 131, 199);
+                rect(0,0,width, 127);
+                drawClouds(yOffInit, zOff);
+                yOffInit += 0.05;
+                zOff +=0.07;
+                
+                
+            };
         
         }
     };
 
     // Get the canvas that Processing-js will use
-    var canvas = document.getElementById("mycanvas2"); 
+    var canvas2 = document.getElementById("mycanvas2"); 
     // Pass the function sketchProc (defined in myCode.js) to Processing's constructor.
-    var processingInstance = new Processing(canvas, sketchProc); 
+    var processingInstance = new Processing(canvas2, sketchProc); 
  </script>
 
 </html>
