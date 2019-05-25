@@ -34,7 +34,7 @@
     var sketchProc = function(processingInstance) {
      with (processingInstance) {
         size(400, 400); 
-        frameRate(30);
+        frameRate(20);
         
         // ProgramCodeGoesHere
         //Star is an object which stores the star parameters and has meathods to draw them
@@ -199,22 +199,21 @@ draw = function() {
             };
 
             var drawClouds = function(yOffInit, zOff){    
-                var maxY = 75;
+                var maxY = 100;
                 var xOff = 0;
                 var yOff = yOffInit;
                 var val;
                 var x;
                 var y;
-                fill(250, 250, 250);
-                stroke(255, 255, 255,40);
-                strokeWeight(2);
+                fill(250, 250, 250,40);
+                noStroke();
                 
-                for(x=1; x<width; x+=2){
+                for(x=1; x<width; x+=3){
                     yOff = yOffInit;
-                    for(y=1; y<maxY;y+=2){
+                    for(y=1; y<maxY;y+=3){
                     val = map(noise(xOff,yOff, zOff),0,1,0,255);
-                    stroke(255, 255, 255,val);
-                    point(x,y);
+                    fill(255, 255, 255,val);
+                    rect(x,y,3,3);
                     yOff +=0.1;
                     }
                     xOff +=0.01;
@@ -271,7 +270,7 @@ draw = function() {
                 }
             };
             size(400, 400); 
-            frameRate(10);
+            frameRate(20);
             //Draw Sky
             background(80, 131, 199);
 
@@ -295,8 +294,8 @@ draw = function() {
                 fill(80, 131, 199);
                 rect(0,0,width, 127);
                 drawClouds(yOffInit, zOff);
-                yOffInit += 0.05;
-                zOff +=0.07;
+                yOffInit += 0.03;
+                zOff +=0.01;
                 
                 
             };
