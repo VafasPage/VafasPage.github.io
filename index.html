@@ -7,16 +7,24 @@
         text-align:center;
         background-color:rgb(250, 250, 150)
     }
+    canvas{
+        border: 2px solid black;
+    }
 </style>
  <body>
-     <h1>This Is Vafa's First Test Webpage</h1>
+     <h1>This Is Vafa's First Webpage</h1>
+     <h2>Advertisement for imaginary brand</h2>
     <p align="center"> 
 	<!--This draws the Canvas on the webpage -->
-      <canvas id="mycanvas"></canvas> 
+      <canvas id="mycanvas"></canvas>
+      
     </p>
     <p>
         This was created for an assignment which entailed creating an animated advertisment for an imaginary product
     </p>
+    <h2>Creating An Image of Mountain Scenery</h2>
+    <canvas id="mycanvas2"></canvas> 
+    <p>This image was programmed from scratch. No image was imported.</p>
  </body>
  
  
@@ -173,6 +181,119 @@ draw = function() {
 
     // Get the canvas that Processing-js will use
     var canvas = document.getElementById("mycanvas"); 
+    // Pass the function sketchProc (defined in myCode.js) to Processing's constructor.
+    var processingInstance = new Processing(canvas, sketchProc); 
+ </script>
+
+<script>
+    var sketchProc = function(processingInstance) {
+        with (processingInstance) {
+            size(400, 400); 
+            frameRate(30);
+            var leviRand = function(max, min){
+                var value;
+                while(true){
+                    value = random(min,max);
+                    if(value<random(min,max) && value<random(min,max)){
+                        return(value);
+                    }
+                }
+            };
+
+            var drawClouds = function(rand){    
+                var maxY = 169;
+                var xOff = rand;
+                var yOff;
+                var val;
+                var x;
+                var y;
+                fill(250, 250, 250);
+                stroke(255, 255, 255,40);
+                strokeWeight(1);
+                
+                for(x=1; x<width; x++){
+                    yOff = rand;
+                    for(y=1; y<maxY;y++){
+                    val = map(noise(xOff,yOff),0,1,0,255);
+                    stroke(255, 255, 255,val);
+                    point(x,y);
+                    yOff +=0.1;
+                    }
+                    xOff +=0.01;
+                }
+            };
+
+            var drawTree = function(x, y, size){
+                noStroke();
+                pushMatrix();
+                translate(x,y);
+                scale(size);
+                beginShape();
+                fill(45, 161, 49);
+                vertex(0,16);
+                vertex(6, 0);
+                vertex(12, 16);
+                
+                endShape(CLOSE);
+                fill(166, 124, 61);
+                rect(5,16,2,4);
+                popMatrix();
+            };
+
+            var drawForrest = function(noTrees){
+            var size;
+            var x;
+            var y;
+            var minY = 0.4*height;
+            var maxY = 383;
+                for(var i=0; i<noTrees; i++){
+                    x=random(0,width-10);
+                    y=leviRand(minY,maxY);
+                    size = map(y,minY, maxY, 0.3, 1.5);
+                    drawTree(x,y,size);
+                }
+            };
+
+            var drawMountainRange = function(color, tStart, tInc, minHeight, maxHeight) {
+                var n;
+                var y;
+                var x;
+                var t=tStart;
+                
+                //Draw a mountain
+                stroke(color);
+                for (var x = 1; x < width; x++) {
+                    t+=tInc;
+                    n = noise(t);
+                    y = map(n, 0, 1, minHeight, maxHeight);
+                    rect(x, height-y, 1, y);
+                }
+            };
+
+            //Draw Sky
+            fill(80, 131, 199);
+            rect(0,0,width,height);
+            noFill();
+                
+            //Draw clouds
+            drawClouds(random(0,100));
+
+            // furthest moutain
+            drawMountainRange(color(55, 115, 93), random(0,10), 0.03, 0.5*height, 0.75*height);
+
+            // middle mountain
+            drawMountainRange(color(105, 179, 126), random(0,10), 0.02, 0.3*height, 0.6*height);
+
+            //closest mountain
+            drawMountainRange(color(45, 84, 37), random(0,10), 0.01, 0, 0.5*height);
+
+            drawForrest(350);
+        
+        }
+    };
+
+    // Get the canvas that Processing-js will use
+    var canvas = document.getElementById("mycanvas2"); 
     // Pass the function sketchProc (defined in myCode.js) to Processing's constructor.
     var processingInstance = new Processing(canvas, sketchProc); 
  </script>
